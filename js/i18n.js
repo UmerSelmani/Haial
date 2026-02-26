@@ -7,8 +7,8 @@ const I18N = {
   en: {
     tagline: "Faith. Data. Clarity.",
     subtitle: "Guided by Faith, Driven by Intelligence",
-    version: "Version 9.0",
-    versionDesc: "Live Data + AI + MTFCM Signals",
+    version: "Version 9.1",
+    versionDesc: "Live Streams + Scoring Engine + MTFCM",
     home: "Home", streams: "Streams", learn: "Learn", signals: "Signals", about: "About",
     halal: "Halal", haram: "Haram", review: "Review", preliminary: "Preliminary",
     aiChecker: "AI Compliance Checker",
@@ -55,7 +55,7 @@ const I18N = {
     aiIntelligence: "AI Intelligence", aiIntelligenceDesc: "Smart reasoning explaining the 'why' behind each rating",
     transparentLogic: "Transparent Logic", transparentLogicDesc: "Clear proof scores showing source strength and consensus",
     copyright: "© Haial Project 2025–2026 — Concept by Umer Selmani",
-    versionFooter: "Version 9.0 — Unified Framework + MTFCM Signals",
+    versionFooter: "Version 9.1 — Scoring Engine + Live RSS Streams",
     darkMode: "Dark Mode", lightMode: "Light Mode",
     signalsTitle: "MTFCM Trading Signals",
     signalsDesc: "Multi-Timeframe Confluence Monitor — Halal spot trading signals powered by technical analysis across 6 timeframes.",
@@ -74,7 +74,7 @@ const I18N = {
   ar: {
     tagline: "الإيمان. البيانات. الوضوح.",
     subtitle: "موجه بالإيمان، مدفوع بالذكاء",
-    version: "الإصدار 9.0",
+    version: "الإصدار 9.1",
     versionDesc: "بيانات حية + ذكاء اصطناعي + MTFCM",
     home: "الرئيسية", streams: "التدفقات", learn: "تعلم", signals: "الإشارات", about: "حول",
     halal: "حلال", haram: "حرام", review: "مراجعة", preliminary: "أولي",
@@ -122,7 +122,7 @@ const I18N = {
     aiIntelligence: "ذكاء اصطناعي", aiIntelligenceDesc: "تفكير ذكي يشرح لماذا وراء كل تصنيف",
     transparentLogic: "منطق شفاف", transparentLogicDesc: "درجات إثبات واضحة",
     copyright: "© حيال ٢٠٢٥–٢٠٢٦ — عمر سلماني",
-    versionFooter: "الإصدار 9.0 — الإطار الموحد + MTFCM",
+    versionFooter: "الإصدار 9.1 — الإطار الموحد + MTFCM",
     darkMode: "الوضع الداكن", lightMode: "الوضع الفاتح",
     signalsTitle: "إشارات MTFCM",
     signalsDesc: "مراقب التقاء الأطر الزمنية — إشارات تداول فوري حلال عبر ٦ أطر زمنية.",
@@ -139,7 +139,7 @@ const I18N = {
   },
 
   tr: {
-    tagline: "İnanç. Veri. Netlik.", subtitle: "İnançla Yönlendirildi", version: "Sürüm 9.0", versionDesc: "Canlı Veri + AI + MTFCM",
+    tagline: "İnanç. Veri. Netlik.", subtitle: "İnançla Yönlendirildi", version: "Sürüm 9.1", versionDesc: "Canlı Veri + AI + MTFCM",
     home: "Ana Sayfa", streams: "Akışlar", learn: "Öğren", signals: "Sinyaller", about: "Hakkında",
     halal: "Helal", haram: "Haram", review: "İnceleme", preliminary: "Ön",
     aiChecker: "AI Denetleyici", enterCoin: "Coin adı girin (örn: BTC)", coinNotFound: "Bulunamadı",
@@ -172,7 +172,7 @@ const I18N = {
     verifiedSourcesTitle: "Doğrulanmış Kaynaklar", verifiedSourcesDescA: "Her karar güvenilir kaynaklar tarafından desteklenir",
     aiIntelligence: "AI Zekası", aiIntelligenceDesc: "Akıllı gerekçe",
     transparentLogic: "Şeffaf Mantık", transparentLogicDesc: "Net kanıt puanları",
-    copyright: "© Haial 2025–2026 — Umer Selmani", versionFooter: "Sürüm 9.0",
+    copyright: "© Haial 2025–2026 — Umer Selmani", versionFooter: "Sürüm 9.1",
     darkMode: "Karanlık Mod", lightMode: "Açık Mod",
     signalsTitle: "MTFCM Sinyalleri", signalsDesc: "Çoklu Zaman Dilimi Birleşim Monitörü — Helal spot sinyalleri.",
     sf1: "Çoklu Zaman Analizi", sf1d: "6 zaman dilimi eşzamanlı",
@@ -186,7 +186,7 @@ const I18N = {
   },
 
   sq: {
-    tagline: "Besimi. Të dhënat. Qartësia.", subtitle: "Udhëhequr nga Besimi", version: "V9.0", versionDesc: "Live + AI + MTFCM",
+    tagline: "Besimi. Të dhënat. Qartësia.", subtitle: "Udhëhequr nga Besimi", version: "V9.1", versionDesc: "Live + AI + MTFCM",
     home: "Ballina", streams: "Rrjedhat", learn: "Mëso", signals: "Sinjalet", about: "Rreth",
     halal: "Hallall", haram: "Haram", review: "Rishikim", preliminary: "Paraprake",
     aiChecker: "Kontrolluesi AI", enterCoin: "Vendosni emrin (p.sh. BTC)", coinNotFound: "Nuk u gjet",
@@ -219,7 +219,7 @@ const I18N = {
     verifiedSourcesTitle: "Burime", verifiedSourcesDescA: "Autoritete të besueshme",
     aiIntelligence: "AI", aiIntelligenceDesc: "Arsyetim inteligjent",
     transparentLogic: "Logjikë", transparentLogicDesc: "Rezultate të qarta",
-    copyright: "© Haial 2025–2026 — Umer Selmani", versionFooter: "V9.0",
+    copyright: "© Haial 2025–2026 — Umer Selmani", versionFooter: "V9.1",
     darkMode: "Errët", lightMode: "Ndriçuar",
     signalsTitle: "Sinjale MTFCM", signalsDesc: "Sinjale spot hallall.",
     sf1: "Analizë", sf1d: "6 korniza kohore",
@@ -232,7 +232,7 @@ const I18N = {
   },
 
   ru: {
-    tagline: "Вера. Данные. Ясность.", subtitle: "Руководствуясь Верой", version: "Версия 9.0", versionDesc: "Данные + ИИ + MTFCM",
+    tagline: "Вера. Данные. Ясность.", subtitle: "Руководствуясь Верой", version: "Версия 9.1", versionDesc: "Данные + ИИ + MTFCM",
     home: "Главная", streams: "Потоки", learn: "Учиться", signals: "Сигналы", about: "О нас",
     halal: "Халяль", haram: "Харам", review: "Проверка", preliminary: "Предв.",
     aiChecker: "ИИ Проверка", enterCoin: "Введите монету (напр. BTC)", coinNotFound: "Не найдена",
@@ -265,7 +265,7 @@ const I18N = {
     verifiedSourcesTitle: "Источники", verifiedSourcesDescA: "Надежные органы",
     aiIntelligence: "ИИ", aiIntelligenceDesc: "Умное рассуждение",
     transparentLogic: "Логика", transparentLogicDesc: "Четкие оценки",
-    copyright: "© Haial 2025–2026 — Умер Сельмани", versionFooter: "Версия 9.0",
+    copyright: "© Haial 2025–2026 — Умер Сельмани", versionFooter: "Версия 9.1",
     darkMode: "Темный", lightMode: "Светлый",
     signalsTitle: "Сигналы MTFCM", signalsDesc: "Халяль спот-сигналы по 6 таймфреймам.",
     sf1: "Анализ", sf1d: "6 таймфреймов",
