@@ -772,3 +772,168 @@ body::before {
 
 /* ── v9.3: Stream translation note ── */
 .stream-trans-note { font-size: 10px; color: var(--text-dimmed); font-style: italic; margin-bottom: 4px; opacity: 0.7; }
+
+/* ═══════════════════════════════════════
+   v9.4: AI Compliance Checker Styles
+   ═══════════════════════════════════════ */
+
+/* ── Tier badges ── */
+.ai-tier-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; padding: 3px 10px;
+  border-radius: 12px; margin: 0 auto; width: fit-content;
+}
+.ai-tier-db { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+.ai-tier-ext { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.2); }
+.ai-tier-ai { background: rgba(168,85,247,0.12); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); }
+
+/* ── Verdict badges ── */
+.ai-verdict {
+  display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 14px;
+  border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.ai-verdict-halal { background: rgba(34,197,94,0.15); color: #22c55e; }
+.ai-verdict-haram { background: rgba(239,68,68,0.15); color: #ef4444; }
+.ai-verdict-caution { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.ai-verdict-review { background: rgba(234,179,8,0.15); color: #eab308; }
+
+.ai-confidence {
+  display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px;
+  border-radius: 8px; margin-left: 6px;
+  background: var(--bg-card-inner); color: var(--text-muted); border: 1px solid var(--border-primary);
+}
+
+/* ── AI summary ── */
+.ai-summary {
+  font-size: 12px; line-height: 1.6; color: var(--text-secondary);
+  padding: 10px; border-radius: var(--radius-sm);
+  background: var(--bg-card-inner); border: 1px solid var(--border-primary);
+}
+
+/* ── Screening grid ── */
+.scr-grid {
+  border: 1px solid var(--border-primary); border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.scr-grid-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 10px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-muted);
+  background: var(--bg-card-inner); border-bottom: 1px solid var(--border-primary);
+}
+.scr-proh-header { font-size: 9px; opacity: 0.7; }
+
+.scr-row {
+  padding: 8px 10px; border-bottom: 1px solid var(--border-primary);
+  transition: background 0.15s;
+}
+.scr-row:last-child { border-bottom: none; }
+.scr-row:hover { background: var(--bg-card-inner); }
+
+.scr-header {
+  display: flex; align-items: center; gap: 6px; font-size: 12px;
+}
+.scr-label { font-weight: 600; color: var(--text-primary); flex: 1; }
+.scr-prohibitions { display: flex; gap: 6px; }
+
+.scr-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%; font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+.scr-pass { background: rgba(34,197,94,0.15); color: #22c55e; }
+.scr-fail { background: rgba(239,68,68,0.15); color: #ef4444; }
+.scr-caution { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.scr-na { background: var(--bg-card-inner); color: var(--text-dimmed); }
+
+.scr-note {
+  font-size: 11px; line-height: 1.5; color: var(--text-muted);
+  margin-top: 3px; padding-left: 24px;
+}
+
+/* ── Prohibition dots ── */
+.proh-tag {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 9px; font-weight: 600; color: var(--text-dimmed);
+}
+.proh-dot { font-size: 8px; }
+.proh-present { color: #ef4444; }
+.proh-concern { color: #f59e0b; }
+.proh-none { color: #22c55e; }
+.proh-na { color: var(--text-dimmed); font-size: 8px; }
+
+/* ── Concerns / Positives lists ── */
+.ai-list {
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  font-size: 11px; line-height: 1.6;
+}
+.ai-concerns { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); }
+.ai-positives { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); }
+.ai-list-title { font-weight: 700; font-size: 11px; margin-bottom: 4px; color: var(--text-primary); }
+.ai-list-item { color: var(--text-secondary); padding: 1px 0; }
+.ai-list-item::before { content: '\2022 '; opacity: 0.4; }
+
+/* ── Haram industry flag ── */
+.ai-haram-flag {
+  padding: 8px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600;
+  background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2);
+}
+
+/* ── Scholar references ── */
+.ai-scholar {
+  font-size: 11px; line-height: 1.5; color: var(--text-muted);
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  background: var(--bg-card-inner); border: 1px solid var(--border-primary);
+}
+
+/* ── Disclaimer ── */
+.ai-disclaimer {
+  font-size: 10px; line-height: 1.5; color: var(--text-dimmed);
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.12);
+  font-style: italic;
+}
+
+/* ── Whitepaper section ── */
+.ai-wp-section {
+  padding: 10px; border-radius: var(--radius-sm);
+  background: var(--bg-card-inner); border: 1px solid var(--border-primary);
+}
+.ai-wp-title {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: var(--text-accent); margin-bottom: 6px;
+}
+.ai-wp-textarea {
+  width: 100%; padding: 8px; font-size: 11px; font-family: inherit;
+  border: 1px solid var(--border-primary); border-radius: var(--radius-sm);
+  background: var(--bg-primary); color: var(--text-primary);
+  resize: vertical; outline: none; transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.ai-wp-textarea:focus { border-color: var(--text-accent); }
+.ai-wp-done {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: #22c55e;
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  background: rgba(34,197,94,0.06);
+}
+
+/* ── Remaining counter ── */
+.ai-remaining {
+  text-align: center; font-size: 10px; color: var(--text-dimmed);
+  padding: 4px 0;
+}
+
+/* ── Loading spinner ── */
+.ai-spinner {
+  width: 32px; height: 32px; margin: 0 auto;
+  border: 3px solid var(--border-primary);
+  border-top-color: #a855f7;
+  border-radius: 50%;
+  animation: ai-spin 0.8s linear infinite;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+
+/* ── Gap utility ── */
+.gap-10 { gap: 10px; }
+.gap-12 { gap: 12px; }
