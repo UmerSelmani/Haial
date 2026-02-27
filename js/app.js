@@ -1,8 +1,12 @@
 /* ═══════════════════════════════════════
-   HAIAL — Main Application v9.3
+   HAIAL — Main Application v9.4
    Faith. Data. Clarity.
+   3-Tier AI Compliance Checker
    © Haial Project 2025–2026 — Umer Selmani
    ═══════════════════════════════════════ */
+
+// ── Config ──
+const HAIAL_AI_ENDPOINT = 'https://haial-ai.YOUR_SUBDOMAIN.workers.dev'; // ← Update after deploying worker
 
 // ── State ──
 const State = {
@@ -23,70 +27,152 @@ const State = {
     if (l && I18N[l]) State.lang = l;
     window._haialLang = State.lang;
   } catch {}
-  // Init page-level state
   window._haialPage = 1;
   window._haialSearch = '';
   window._haialResult = null;
+  window._haialResultTier = null; // 'db', 'extended', 'ai'
+  window._haialLoading = false;
+  window._haialAiRemaining = null;
+  try {
+    const stored = localStorage.getItem('haial-ai-remaining');
+    if (stored !== null) window._haialAiRemaining = parseInt(stored);
+  } catch {}
 })();
 
 // ── Helpers ──
 function t() { return I18N[State.lang] || I18N.en; }
 function isRTL() { return RTL_LANGS.includes(State.lang); }
-
 function save(key, val) {
   try { localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val)); } catch {}
 }
 
 // ── Actions ──
-function setPage(pg) {
-  State.page = pg;
-  render();
-}
-
+function setPage(pg) { State.page = pg; render(); }
 function setLang(lang) {
-  State.lang = lang;
-  window._haialLang = lang;
+  State.lang = lang; window._haialLang = lang;
   save('haial-lang', lang);
   document.documentElement.dir = isRTL() ? 'rtl' : 'ltr';
   document.documentElement.lang = lang;
   render();
 }
-
-function toggleDark() {
-  State.dark = !State.dark;
-  save('haial-dark', State.dark);
-  render();
-}
-
-function openCoinModal(idx) {
-  State.selectedCoin = COINS[idx] || null;
-  render();
-}
-
+function toggleDark() { State.dark = !State.dark; save('haial-dark', State.dark); render(); }
+function openCoinModal(idx) { State.selectedCoin = COINS[idx] || null; render(); }
 function closeModal(event) {
-  if (event && event.target && !event.target.closest('.modal-content') && !event.target.classList.contains('modal-close')) {
-    // clicked backdrop
-  }
-  State.selectedCoin = null;
-  render();
+  if (event && event.target && !event.target.closest('.modal-content') && !event.target.classList.contains('modal-close')) {}
+  State.selectedCoin = null; render();
 }
+function changePage(pg) { window._haialPage = pg; render(); }
 
-function changePage(pg) {
-  window._haialPage = pg;
-  render();
-}
+// ═══════════════════════════════════════
+// 3-TIER CHECKER
+// Tier 1: Main database (COINS)
+// Tier 2: Extended source database (EXTENDED_COINS)
+// Tier 3: AI Analysis (Cloudflare Worker → Anthropic)
+// ═══════════════════════════════════════
 
 function doCheck() {
   const s = (window._haialSearch || '').trim().toLowerCase();
   if (!s) return;
-  const coin = COINS.find(c => c.ticker.toLowerCase() === s || c.name.toLowerCase() === s);
-  window._haialResult = coin || 'nf';
+
+  // ── Tier 1: Main database ──
+  const dbCoin = COINS.find(c => c.ticker.toLowerCase() === s || c.name.toLowerCase() === s);
+  if (dbCoin) {
+    window._haialResult = dbCoin;
+    window._haialResultTier = 'db';
+    render();
+    return;
+  }
+
+  // ── Tier 2: Extended source database ──
+  const extCoin = findExtendedCoin(s);
+  if (extCoin) {
+    window._haialResult = extCoin;
+    window._haialResultTier = 'extended';
+    render();
+    return;
+  }
+
+  // ── Tier 3: AI Analysis ──
+  doAiCheck(s);
+}
+
+async function doAiCheck(query) {
+  window._haialLoading = true;
+  window._haialResult = null;
+  window._haialResultTier = null;
+  render();
+
+  try {
+    const response = await fetch(HAIAL_AI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coin: query, ticker: query.toUpperCase() }),
+    });
+    const data = await response.json();
+
+    if (response.status === 429) {
+      window._haialResult = 'rate_limited';
+      window._haialAiRemaining = 0;
+      save('haial-ai-remaining', '0');
+    } else if (data.success && data.analysis) {
+      window._haialResult = data.analysis;
+      window._haialResultTier = 'ai';
+      if (data.remaining !== undefined) {
+        window._haialAiRemaining = data.remaining;
+        save('haial-ai-remaining', String(data.remaining));
+      }
+    } else {
+      window._haialResult = 'error';
+    }
+  } catch (err) {
+    console.error('Haial AI error:', err);
+    window._haialResult = 'offline';
+  }
+
+  window._haialLoading = false;
+  render();
+}
+
+async function doAiWhitepaper() {
+  const wpText = (document.getElementById('haial-wp-input') || {}).value || '';
+  if (!wpText.trim()) return;
+  const coinName = (window._haialResult && window._haialResult.coin) || window._haialSearch;
+  const coinTicker = (window._haialResult && window._haialResult.ticker) || coinName.toUpperCase();
+
+  window._haialLoading = true;
+  render();
+
+  try {
+    const response = await fetch(HAIAL_AI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coin: coinName, ticker: coinTicker, whitepaper: wpText }),
+    });
+    const data = await response.json();
+
+    if (response.status === 429) {
+      window._haialResult = 'rate_limited';
+      window._haialResultTier = null;
+    } else if (data.success && data.analysis) {
+      data.analysis._hasWhitepaper = true;
+      window._haialResult = data.analysis;
+      window._haialResultTier = 'ai';
+      if (data.remaining !== undefined) {
+        window._haialAiRemaining = data.remaining;
+        save('haial-ai-remaining', String(data.remaining));
+      }
+    }
+  } catch (err) { console.error('Haial AI whitepaper error:', err); }
+
+  window._haialLoading = false;
   render();
 }
 
 function resetChecker() {
   window._haialSearch = '';
   window._haialResult = null;
+  window._haialResultTier = null;
+  window._haialLoading = false;
   render();
 }
 
@@ -104,11 +190,8 @@ function render() {
   const $ = t();
   const rtl = isRTL();
   const root = document.getElementById('app');
-
-  // Apply theme
   document.documentElement.setAttribute('data-theme', State.dark ? 'dark' : 'light');
 
-  // ── Header ──
   const header = `
     <header class="header">
       <div class="header-inner">
@@ -135,7 +218,6 @@ function render() {
       </div>
     </header>`;
 
-  // ── Nav ──
   const nav = `
     <nav class="nav">
       <div class="nav-inner">
@@ -147,7 +229,6 @@ function render() {
       </div>
     </nav>`;
 
-  // ── Page content ──
   let page = '';
   switch (State.page) {
     case 'home':    page = renderHomePage($, rtl); break;
@@ -157,7 +238,6 @@ function render() {
     case 'about':   page = renderAboutPage($); break;
   }
 
-  // ── Footer ──
   const footer = `
     <footer class="footer">
       <div class="footer-inner">
@@ -166,14 +246,10 @@ function render() {
       </div>
     </footer>`;
 
-  // ── Modal ──
   const modal = renderModal(State.selectedCoin, $);
 
-  // ── Assemble ──
   root.innerHTML = header + nav + `
-    <main style="max-width:1200px;margin:0 auto;padding:20px 16px">
-      ${page}
-    </main>
+    <main style="max-width:1200px;margin:0 auto;padding:20px 16px">${page}</main>
   ` + footer + modal;
 }
 

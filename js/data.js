@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   HAIAL v9.3 — Coin Database + Scoring Engine
+   HAIAL v9.4 — Coin Database + Scoring Engine
    Per-coin scoring: only reviewers count
    ═══════════════════════════════════════ */
 
@@ -18,8 +18,9 @@ var SOURCE_AUTHORITY = {
 var ALL_SOURCE_KEYS = Object.keys(SOURCE_AUTHORITY);
 var TOTAL_MAX = ALL_SOURCE_KEYS.reduce(function(s, k) { return s + SOURCE_AUTHORITY[k].weight; }, 0); // 115
 
-// ── V5 Directional Scoring: halal adds, haram subtracts ──
-// score = (positiveWeight − negativeWeight) / TOTAL_MAX × 100, clamped 0–100
+// ── V5 Directional Scoring + Consensus Multiplier ──
+// Base: (positiveWeight − negativeWeight) / TOTAL_MAX × 100
+// Consensus bonus: ★+3, ★★+5, ★★★+7 (halal coins only)
 function calculateProofScore(reviews) {
   if (!reviews || reviews.length === 0) return { score: 0, stars: 0, coinMax: 0 };
   var positiveW = 0, negativeW = 0, totalW = 0;
@@ -29,19 +30,27 @@ function calculateProofScore(reviews) {
     totalW += auth.weight;
     if (r.opinion === 'halal' || r.opinion === 'caution') positiveW += auth.weight;
     else if (r.opinion === 'haram') negativeW += auth.weight;
-    // 'review' → 0 both ways
   });
   var raw = Math.round(((positiveW - negativeW) / TOTAL_MAX) * 100);
   var score = Math.max(0, Math.min(100, raw));
 
+  // Stars: only for positive-direction coins (halal/caution majority)
   var formalCount = reviews.filter(function(r) {
     var auth = SOURCE_AUTHORITY[r.source];
     return auth && auth.weight > 0 && auth.tier !== 'community';
   }).length;
+  var isPositive = positiveW > negativeW;
   var stars = 0;
-  if (formalCount >= 2) stars = 1;
-  if (formalCount >= 3) stars = 2;
-  if (formalCount >= 4) stars = 3;
+  if (isPositive) {
+    if (formalCount >= 2) stars = 1;
+    if (formalCount >= 3) stars = 2;
+    if (formalCount >= 4) stars = 3;
+  }
+
+  // Consensus bonus (only when stars earned)
+  var bonus = [0, 3, 5, 7][stars] || 0;
+  score = Math.min(100, score + bonus);
+
   return { score: score, stars: stars, coinMax: totalW };
 }
 
@@ -494,7 +503,7 @@ function locStr(obj, lang) {
 }
 
 if (typeof console !== 'undefined') {
-  console.log('Haial v9.3 Scoring Engine (per-coin):');
+  console.log('Haial v9.4 Scoring Engine (per-coin):');
   COINS.forEach(function(c) {
     console.log('  ' + c.emoji + ' ' + c.ticker.padEnd(5) + '\u2192 ' + c.category.padEnd(12) +
       'Proof: ' + c.proof.score + (c.proof.stars > 0 ? ' (' + '\u2605'.repeat(c.proof.stars) + ')' : ''));
