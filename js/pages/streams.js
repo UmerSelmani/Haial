@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════
-   HAIAL v9.2 — Streams Page (Live RSS Feeds)
+   HAIAL v9.3 — Streams Page (Live RSS Feeds)
    Table 1: All Islamic Sources
-   Table 2: Coin News (halal-only)
+   Table 2: Halal Coin News (all sources, coin-filtered)
    + original text with translation below
    ═══════════════════════════════════════ */
 
@@ -148,6 +148,28 @@ function renderNewsItem(item) {
   '</a>';
 }
 
+// ── Render coin news item (no source badge, coins only) ──
+function renderCoinNewsItem(item) {
+  var coinTags = item.coins.length ? item.coins.map(coinBadge).join(' ') : '';
+  var lang = window._haialLang || 'en';
+
+  var transNote = '';
+  if (lang !== 'en') {
+    var labels = { ar: 'المحتوى الأصلي بالإنجليزية', tr: 'Orijinal içerik İngilizce', sq: 'Përmbajtja origjinale në anglisht', ru: 'Оригинал на английском' };
+    transNote = '<div class="stream-trans-note">[' + (labels[lang] || '') + ']</div>';
+  }
+
+  return '<a href="' + item.link + '" target="_blank" rel="noopener" class="stream-item glow-card" style="text-decoration:none;display:block">' +
+    '<div class="flex items-center justify-between mb-6" style="flex-wrap:wrap;gap:6px">' +
+      (coinTags ? '<div class="flex gap-8" style="flex-wrap:wrap">' + coinTags + '</div>' : '') +
+      '<span style="font-size:10px;color:var(--text-dimmed)">' + timeAgo(item.date) + '</span>' +
+    '</div>' +
+    '<h4 style="font-size:13px;font-weight:600;color:var(--text-primary);line-height:1.4;margin-bottom:4px">' + item.title + '</h4>' +
+    transNote +
+    (item.desc ? '<p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-bottom:0">' + item.desc + '...</p>' : '') +
+  '</a>';
+}
+
 // ── Skeleton ──
 function renderSkeleton(count) {
   let html = '';
@@ -199,9 +221,6 @@ function renderStreamsPage(t) {
           '<h2 style="font-size:16px;font-weight:700;color:var(--text-accent-dark)">' + String.fromCodePoint(0x1F4B0) + ' ' + t.streamsNews + '</h2>' +
           '<button class="stream-refresh-btn" onclick="loadCryptoFeeds(true)" title="Refresh">' + String.fromCodePoint(0x21BB) + '</button>' +
         '</div>' +
-        '<div style="font-size:11px;color:var(--text-dimmed);margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px">' +
-          RSS_FEEDS.crypto.map(function(f) { return sourceBadge(f.name, f.color); }).join(' ') +
-        '</div>' +
         renderCoinFilter() +
         '<div id="cryptoFeed" class="stream-list">' + renderSkeleton(4) + '</div>' +
       '</div>' +
@@ -232,12 +251,28 @@ var HALAL_TICKERS = COINS.filter(function(c) { return c.category === 'Halal'; })
 var _allCryptoItems = [];
 
 async function loadCryptoFeeds(force) {
-  if (force) RSS_FEEDS.crypto.forEach(function(f) { delete _feedCache[f.id]; });
+  if (force) {
+    RSS_FEEDS.crypto.forEach(function(f) { delete _feedCache[f.id]; });
+    RSS_FEEDS.islamic.forEach(function(f) { delete _feedCache[f.id]; });
+  }
   var el = document.getElementById('cryptoFeed');
   if (!el) return;
 
-  var raw = await fetchAllFeeds('crypto');
+  // Fetch from BOTH crypto and islamic sources
+  var cryptoItems = await fetchAllFeeds('crypto');
+  var islamicItems = await fetchAllFeeds('islamic');
+  var raw = cryptoItems.concat(islamicItems);
+  raw.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+
   if (!document.getElementById('cryptoFeed')) return;
+
+  // Deduplicate by link
+  var seen = {};
+  raw = raw.filter(function(item) {
+    if (seen[item.link]) return false;
+    seen[item.link] = true;
+    return true;
+  });
 
   _allCryptoItems = raw.filter(function(item) {
     return item.coins.some(function(t) { return HALAL_TICKERS.includes(t); });
@@ -271,5 +306,5 @@ function filterCoinNews(ticker) {
       '<p style="font-size:12px">' + (ticker === 'all' ? t.noData : t.noNewsFor + ' ' + ticker) + '</p></div>';
     return;
   }
-  el.innerHTML = filtered.slice(0, 25).map(renderNewsItem).join('');
+  el.innerHTML = filtered.slice(0, 25).map(renderCoinNewsItem).join('');
 }
