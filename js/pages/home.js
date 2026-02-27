@@ -2,7 +2,6 @@
    HAIAL v9.2 — Home Page (Table + Checker)
    ═══════════════════════════════════════ */
 
-// Shared helpers
 function renderBadge(category, emoji, t) {
   var cls = 'badge badge-' + category.toLowerCase();
   var label = t[category.toLowerCase()] || category;
@@ -10,9 +9,10 @@ function renderBadge(category, emoji, t) {
 }
 
 function renderProof(p) {
-  var txt = p.score === 0 ? '0' : p.score + (p.stars > 0 ? '\u2605'.repeat(p.stars) : '');
+  var starHtml = p.stars > 0 ? ' <span class="proof-stars">(' + '\u2605'.repeat(p.stars) + ')</span>' : '';
+  var txt = p.score === 0 ? '0' : String(p.score);
   var cls = p.score === 100 && p.stars >= 1 ? 'proof-maxstar' : p.score === 100 ? 'proof-max' : p.score >= 85 ? 'proof-high' : p.score >= 70 ? 'proof-mid' : 'proof-low';
-  return '<span class="proof ' + cls + '">' + txt + '</span>';
+  return '<span class="proof ' + cls + '">' + txt + starHtml + '</span>';
 }
 
 function renderTrend(v) {
@@ -52,15 +52,31 @@ function renderModal(coin, t, onClose) {
   var proofExp = locStr(coin.proofExplanation, lang);
   var statusExp = locStr(coin.statusExplanation, lang);
 
-  var fatwaRows = coin.reviews.map(function(r) {
-    var auth = SOURCE_AUTHORITY[r.source];
-    var fullName = auth ? auth.fullName : r.source;
-    var opLabel = t[r.opinion] || r.opinion;
-    return '<div class="fatwa-item">' + renderFatwaIcon(r.opinion) +
-      '<strong>' + fullName + '</strong> <span class="fatwa-opinion fatwa-op-' + r.opinion + '">(' + opLabel + ')</span> — ' + r.note +
+  // Build fatwa rows with per-review opinion badges
+  var fatwaRows = coin.fatwas.map(function(fw) {
+    var opLabel = t[fw.opinion] || fw.opinion;
+    var calcTag = fw.inCalc ? '' : ' <span class="source-no-calc">' + t.notInCalc + '</span>';
+    return '<div class="fatwa-item">' + renderFatwaIcon(fw.opinion) +
+      '<strong>' + fw.fullName + '</strong>' + calcTag +
+      ' <span class="fatwa-opinion fatwa-op-' + fw.opinion + '">(' + opLabel + ')</span> — ' + fw.note +
       '</div>';
   }).join('');
 
+  // Show all sources: reviewed ones active, unreviewed = not in calculation
+  var allSourceKeys = Object.keys(SOURCE_AUTHORITY);
+  var reviewedKeys = coin.sources;
+  var sourceListHtml = allSourceKeys.map(function(key) {
+    var auth = SOURCE_AUTHORITY[key];
+    var reviewed = reviewedKeys.indexOf(key) >= 0;
+    if (reviewed) {
+      var noCalcTag = auth.weight === 0 ? ' <span class="source-no-calc">' + t.notInCalc + '</span>' : '';
+      return '<span class="source-tag source-active">' + auth.fullName + noCalcTag + '</span>';
+    } else {
+      return '<span class="source-tag source-pending">' + auth.fullName + ' <span class="source-no-calc">' + t.notInCalc + '</span></span>';
+    }
+  }).join(' ');
+
+  // Live price
   var priceId = 'modal24h-' + coin.ticker;
   fetch24hChange(coin.ticker).then(function(d) {
     var el = document.getElementById(priceId);
@@ -115,7 +131,8 @@ function renderModal(coin, t, onClose) {
 \
           <div class="card-inner explain-box">\
             <div class="h4-label explain-title">' + Icons.info(14) + ' ' + t.howProofScoreWorks + '</div>\
-            <p class="explain-text">' + proofExp + '</p>\
+            <p class="explain-text" style="margin-bottom:6px">' + t.proofPhilosophy + '</p>\
+            <p class="explain-text" style="opacity:0.7">' + proofExp + '</p>\
           </div>\
 \
           <div class="card-inner explain-box">\
@@ -123,16 +140,20 @@ function renderModal(coin, t, onClose) {
             <p class="explain-text">' + statusExp + '</p>\
           </div>\
 \
+          <div class="card-inner">\
+            <div class="h4-label" style="margin-bottom:8px">' + t.allSources + '</div>\
+            <div style="display:flex;flex-wrap:wrap;gap:4px">' + sourceListHtml + '</div>\
+          </div>\
+\
           <div class="modal-footer">\
             <span>' + t.updated + ': ' + coin.updated + '</span>\
-            <span>' + t.verificationSources + ': ' + (coin.sources.length ? coin.sources.join(', ') : '\u2014') + '</span>\
           </div>\
         </div>\
       </div>\
     </div>';
 }
 
-// ── Coin Table (with 24H column) ──
+// ── Coin Table ──
 function renderCoinTable(t, isRTL) {
   var PER_PAGE = 8;
   var total = Math.ceil(COINS.length / PER_PAGE);
@@ -240,7 +261,6 @@ function renderChecker(t) {
     </div>';
 }
 
-// ── Home page layout ──
 function renderHomePage(t, isRTL) {
   return '\
     <div class="grid-home">\
