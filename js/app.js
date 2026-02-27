@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   HAIAL — Main Application v9.1
+   HAIAL — Main Application v9.2
    Faith. Data. Clarity.
    © Haial Project 2025–2026 — Umer Selmani
    ═══════════════════════════════════════ */
@@ -21,6 +21,7 @@ const State = {
   try {
     const l = localStorage.getItem('haial-lang');
     if (l && I18N[l]) State.lang = l;
+    window._haialLang = State.lang;
   } catch {}
   // Init page-level state
   window._haialPage = 1;
@@ -44,6 +45,7 @@ function setPage(pg) {
 
 function setLang(lang) {
   State.lang = lang;
+  window._haialLang = lang;
   save('haial-lang', lang);
   document.documentElement.dir = isRTL() ? 'rtl' : 'ltr';
   document.documentElement.lang = lang;
