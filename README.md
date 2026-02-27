@@ -1,4 +1,4 @@
-# Haial Platform v9.2
+# Haial Platform v9.3
 
 **Faith. Data. Clarity.**
 
