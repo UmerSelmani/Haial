@@ -740,3 +740,23 @@ body::before {
 @media (min-width: 769px) {
   .header-version { display: block; }
 }
+
+/* ── v9.2: Explanation boxes ── */
+.explain-box { background: var(--bg-card); border: 1px dashed var(--border); border-radius: 8px; padding: 10px 12px; }
+.explain-title { display: flex; align-items: center; gap: 6px; color: var(--text-accent); font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+.explain-text { font-size: 11px; line-height: 1.6; color: var(--text-secondary); }
+
+/* ── v9.2: 24H change ── */
+.change-pos { color: #22c55e; font-weight: 600; font-size: 12px; }
+.change-neg { color: #ef4444; font-weight: 600; font-size: 12px; }
+.change-loading { color: var(--text-dimmed); font-size: 11px; }
+
+/* ── v9.2: Fatwa opinion badges ── */
+.fatwa-opinion { font-size: 10px; font-weight: 600; border-radius: 4px; padding: 1px 5px; }
+.fatwa-op-halal { color: #22c55e; background: rgba(34,197,94,0.1); }
+.fatwa-op-haram { color: #ef4444; background: rgba(239,68,68,0.1); }
+.fatwa-op-caution { color: #f59e0b; background: rgba(245,158,11,0.1); }
+.fatwa-op-review { color: #eab308; background: rgba(234,179,8,0.1); }
+
+.fatwa-item { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--text-secondary); padding: 4px 0; }
+.fatwa-item strong { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
