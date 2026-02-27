@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   HAIAL — Main Application v9.2
+   HAIAL — Main Application v9.3
    Faith. Data. Clarity.
    © Haial Project 2025–2026 — Umer Selmani
    ═══════════════════════════════════════ */
